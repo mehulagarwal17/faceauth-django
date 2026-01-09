@@ -4,7 +4,7 @@ services:
     name: faceauth
     runtime: python
     plan: free
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput --settings=flogin.production_settings"
+    buildCommand: "pip install -r requirements.txt && python setup_render.py"
     startCommand: "gunicorn flogin.wsgi:application"
     envVars:
       - key: DJANGO_SETTINGS_MODULE
