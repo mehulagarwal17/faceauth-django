@@ -4,15 +4,15 @@ services:
     name: faceauth
     runtime: python
     plan: free
-    buildCommand: "./build.sh"
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput --settings=flogin.production_settings"
     startCommand: "gunicorn flogin.wsgi:application"
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: flogin.production_settings
       - key: DJANGO_DEBUG
         value: False
-      - key: PYTHON_VERSION
-        value: 3.9.19
+      - key: SECRET_KEY
+        value: l*4+zwbw_%da#q-#jq6=o)@2u@ia-zbbq%!e1mcnc=s*0x9wfr
 
   # PostgreSQL Database
   - type: pserv
