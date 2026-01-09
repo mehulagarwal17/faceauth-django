@@ -1,0 +1,21 @@
+services:
+  # Web Service
+  - type: web
+    name: faceauth
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn flogin.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: flogin.production_settings
+      - key: DJANGO_DEBUG
+        value: False
+      - key: PYTHON_VERSION
+        value: 3.9.19
+
+  # PostgreSQL Database
+  - type: pserv
+    name: faceauth-db
+    plan: free
+    env: postgres

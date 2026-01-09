@@ -59,16 +59,19 @@ TEMPLATES = [
 WSGI_APPLICATION = 'flogin.wsgi.application'
 
 # Database - Update for production
-DATABASES = {
-    'default': {
-        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.environ.get('DB_NAME', BASE_DIR / 'db.sqlite3'),
-        'USER': os.environ.get('DB_USER', ''),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST': os.environ.get('DB_HOST', ''),
-        'PORT': os.environ.get('DB_PORT', ''),
+import dj_database_url
+
+if 'DATABASE_URL' in os.environ:
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
