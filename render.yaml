@@ -10,9 +10,13 @@ services:
       - key: DJANGO_SETTINGS_MODULE
         value: flogin.production_settings
       - key: DJANGO_DEBUG
-        value: False
+        value: "False"
       - key: SECRET_KEY
         value: l*4+zwbw_%da#q-#jq6=o)@2u@ia-zbbq%!e1mcnc=s*0x9wfr
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: PORT
+        value: "10000"
 
   # PostgreSQL Database
   - type: pserv
