@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FaceAuth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --accent: #00ff88;
+            --accent-hover: #00cc6a;
+            --border: #2a2a2a;
+            --glass: rgba(255, 255, 255, 0.05);
+            --error: #ff4444;
+            --success: #00ff88;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .logout-btn {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        main {
+            padding-top: 80px;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .welcome-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .welcome-text h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .welcome-text p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--bg-primary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.1);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Content Sections */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .content-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-action {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .card-action:hover {
+            color: var(--accent-hover);
+        }
+
+        /* Activity List */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: var(--border);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--glass);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .quick-action {
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .quick-action:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .quick-action-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-action-label {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            margin-bottom: 2rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .progress-value {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+            }
+
+            .welcome-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                padding: 1rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-logo">FaceAuth</div>
+            <div class="nav-actions">
+                <a href="/profile/" class="nav-link">Profile</a>
+                <a href="/settings/" class="nav-link">Settings</a>
+                <a href="/logout/" class="logout-btn" onclick="handleLogout(event)">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="dashboard-container">
+            <!-- Welcome Section -->
+            <section class="welcome-section">
+                <div class="welcome-content">
+                    <div class="welcome-text">
+                        <h1>Welcome back, <span id="username">User</span>!</h1>
+                        <p>Your facial recognition authentication is active and secure</p>
+                    </div>
+                    <div class="user-avatar" id="user-avatar">U</div>
+                </div>
+            </section>
+
+            <!-- Stats Grid -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🔐</div>
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Security Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value" id="login-count">0</div>
+                    <div class="stat-label">Total Logins</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏰</div>
+                    <div class="stat-value" id="last-login">Today</div>
+                    <div class="stat-label">Last Login</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🛡️</div>
+                    <div class="stat-value">Active</div>
+                    <div class="stat-label">Account Status</div>
+                </div>
+            </section>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Recent Activity -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recent Activity</h2>
+                        <a href="#" class="card-action">View All</a>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon">🔓</div>
+                            <div class="activity-content">
+                                <div class="activity-title">Successful Login</div>
+                                <div class="activity-time">Just now</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">👤</div>
+                            <div class="activity-content">
+                                <div class="activity-title">Profile Updated</div>
+                                <div class="activity-time">2 hours ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">🔐</div>
+                            <div class="activity-content">
+                                <div class="activity-title">Face Recognition Verified</div>
+                                <div class="activity-time">Yesterday</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">📱</div>
+                            <div class="activity-content">
+                                <div class="activity-title">New Device Login</div>
+                                <div class="activity-time">3 days ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions & Progress -->
+                <div>
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Quick Actions</h2>
+                        </div>
+                        <div class="quick-actions">
+                            <a href="#" class="quick-action">
+                                <div class="quick-action-icon">👤</div>
+                                <div class="quick-action-label">Edit Profile</div>
+                            </a>
+                            <a href="#" class="quick-action">
+                                <div class="quick-action-icon">🔐</div>
+                                <div class="quick-action-label">Update Face</div>
+                            </a>
+                            <a href="#" class="quick-action">
+                                <div class="quick-action-icon">⚙️</div>
+                                <div class="quick-action-label">Settings</div>
+                            </a>
+                            <a href="#" class="quick-action">
+                                <div class="quick-action-icon">📊</div>
+                                <div class="quick-action-label">Analytics</div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="content-card" style="margin-top: 2rem;">
+                        <div class="card-header">
+                            <h2 class="card-title">Security Progress</h2>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Face Recognition</span>
+                                <span class="progress-value">100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Account Security</span>
+                                <span class="progress-value">95%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Data Protection</span>
+                                <span class="progress-value">100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Get username from URL or session
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username') || 'User';
+        
+        // Update dashboard with user info
+        document.getElementById('username').textContent = username;
+        document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
+        
+        // Simulate login count (in real app, this would come from backend)
+        let loginCount = localStorage.getItem('loginCount') || 0;
+        loginCount++;
+        localStorage.setItem('loginCount', loginCount);
+        document.getElementById('login-count').textContent = loginCount;
+        
+        // Update last login time
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        document.getElementById('last-login').textContent = timeString;
+        
+        // Handle logout
+        function handleLogout(event) {
+            event.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/logout/';
+            }
+        }
+
+        // Add some interactivity
+        document.querySelectorAll('.quick-action').forEach(action => {
+            action.addEventListener('click', (e) => {
+                e.preventDefault();
+                const label = action.querySelector('.quick-action-label').textContent;
+                alert(`${label} feature coming soon!`);
+            });
+        });
+        
+        document.querySelectorAll('.activity-item').forEach(item => {
+            item.addEventListener('click', () => {
+                alert('Activity details coming soon!');
+            });
+        });
+    </script>
+</body>
+</html>

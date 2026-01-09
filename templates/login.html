@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FaceAuth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --accent: #00ff88;
+            --accent-hover: #00cc6a;
+            --border: #2a2a2a;
+            --glass: rgba(255, 255, 255, 0.05);
+            --error: #ff4444;
+            --success: #00ff88;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .auth-logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .auth-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .auth-form {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .camera-section {
+            margin: 2rem 0;
+        }
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .camera-overlay {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .camera-status {
+            padding: 0.5rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-active {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .status-inactive {
+            color: var(--text-secondary);
+        }
+
+        .capture-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .capture-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .capture-btn:disabled {
+            background: var(--border);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--border);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .message.error {
+            background: rgba(255, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .auth-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .auth-link:hover {
+            color: var(--accent);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .auth-form {
+                padding: 2rem;
+            }
+
+            .camera-container {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-logo">FaceAuth</div>
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Sign in with facial recognition</p>
+        </div>
+
+        <form id="login-form" class="auth-form">
+            <div class="form-group">
+                <label class="form-label" for="username">Username</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    class="form-input" 
+                    placeholder="Enter your username"
+                    required
+                >
+            </div>
+
+            <div class="camera-section">
+                <div class="camera-container">
+                    <video id="video" autoplay></video>
+                    <div class="camera-overlay">
+                        <div class="camera-status status-inactive" id="camera-status">📷 Camera Off</div>
+                    </div>
+                </div>
+                <button type="button" id="capture-button" class="capture-btn" disabled>
+                    <span>📸</span>
+                    Capture Face
+                </button>
+            </div>
+
+            <button type="submit" id="submit-btn" class="submit-btn" disabled>
+                Sign In
+            </button>
+
+            <div id="message" class="message hidden"></div>
+        </form>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="/register/" class="auth-link">Create Account</a></p>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const captureButton = document.getElementById('capture-button');
+        const submitBtn = document.getElementById('submit-btn');
+        const messageDiv = document.getElementById('message');
+        const cameraStatus = document.getElementById('camera-status');
+        const loginForm = document.getElementById('login-form');
+        
+        let capturedImage = null;
+        let stream = null;
+
+        // Initialize camera
+        async function initCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    } 
+                });
+                video.srcObject = stream;
+                cameraStatus.textContent = '📷 Camera Active';
+                cameraStatus.classList.remove('status-inactive');
+                cameraStatus.classList.add('status-active');
+                captureButton.disabled = false;
+            } catch (err) {
+                console.error("Error accessing camera:", err);
+                cameraStatus.textContent = '📷 Camera Error';
+                showMessage('Camera access denied. Please check permissions.', 'error');
+            }
+        }
+
+        // Capture image from video
+        function captureImage() {
+            if (!stream) {
+                showMessage('Please enable camera first', 'error');
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0);
+            
+            capturedImage = canvas.toDataURL('image/jpeg', 0.9);
+            captureButton.innerHTML = '<span>✓</span> Face Captured';
+            captureButton.style.background = 'var(--success)';
+            submitBtn.disabled = false;
+            
+            showMessage('Face captured successfully!', 'success');
+        }
+
+        // Show message
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.classList.remove('hidden');
+            
+            setTimeout(() => {
+                messageDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Handle form submission
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            if (!capturedImage) {
+                showMessage('Please capture your face first', 'error');
+                return;
+            }
+
+            const formData = new FormData(loginForm);
+            formData.append('face_image', capturedImage);
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Signing In...';
+
+            try {
+                const response = await fetch('/login/', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showMessage('Login successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = data.redirect || '/dashboard/';
+                    }, 1500);
+                } else {
+                    showMessage(data.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign In';
+            }
+        }
+
+        // Event listeners
+        captureButton.addEventListener('click', captureImage);
+        loginForm.addEventListener('submit', handleSubmit);
+
+        // Initialize camera on page load
+        initCamera();
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        });
+    </script>
+</body>
+</html>
