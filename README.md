@@ -18,6 +18,8 @@
 - 🎨 **Modern UI** - Omnidim.io-inspired dark theme
 - 📊 **Analytics Dashboard** - Real-time user insights
 
+## Deployed Link : https://faceauth-wda1.onrender.com/
+
 ## 🚀 Quick Start
 
 ### Prerequisites
